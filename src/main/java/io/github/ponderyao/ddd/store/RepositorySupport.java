@@ -15,7 +15,7 @@ public abstract class RepositorySupport<T extends Aggregate<ID>, ID extends Enti
     
     private final Class<T> clazz;
 
-    private AggregateSnapshotManager<T, ID> aggregateSnapshotManager;
+    private final AggregateSnapshotManager<T, ID> aggregateSnapshotManager;
     
     protected RepositorySupport(Class<T> clazz) {
         this.clazz = clazz;
