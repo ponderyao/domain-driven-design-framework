@@ -11,10 +11,10 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  */
 public class DomainProperties {
     
-    public static final String PREFIX = DomainDrivenDesignProperties.PREFIX + "domain";
+    public static final String PREFIX = DomainDrivenDesignProperties.PREFIX + ".domain";
     
     @NestedConfigurationProperty
-    private DomainEventProperties event;
+    private DomainEventProperties event = new DomainEventProperties();
 
     public DomainEventProperties getEvent() {
         return event;

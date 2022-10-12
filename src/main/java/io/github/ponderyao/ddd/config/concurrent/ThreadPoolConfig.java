@@ -34,7 +34,7 @@ public class ThreadPoolConfig {
      * @return defaultThreadPoolTaskExecutor
      */
     @Bean(name = "defaultThreadPoolTaskExecutor")
-    @ConditionalOnProperty(value = ThreadPoolProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = ThreadPoolProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
     public ThreadPoolTaskExecutor defaultThreadPoolTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(properties.getCorePoolSize());

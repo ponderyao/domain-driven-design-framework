@@ -8,7 +8,6 @@ import io.github.ponderyao.ddd.event.DomainEventHandler;
 import io.github.ponderyao.ddd.event.DomainEventRegister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.Map;
@@ -23,17 +22,20 @@ public class DomainEventConfig {
 
     Logger log = LoggerFactory.getLogger(DomainEventConfig.class);
     
-    @Autowired
-    private DomainEventRegister eventRegister;
+    private final DomainEventRegister eventRegister;
     
-    @Autowired
-    private DomainEventBus eventBus;
+    private final DomainEventBus eventBus;
+    
+    private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
     
     public DomainEventConfig(DomainEventProperties properties, ThreadPoolTaskExecutor threadPoolTaskExecutor) {
-        initEventBus(threadPoolTaskExecutor);
+        this.threadPoolTaskExecutor = threadPoolTaskExecutor;
+        this.eventRegister = SpringBeanUtils.getBean(DomainEventRegister.class);
+        this.eventBus = SpringBeanUtils.getBean(DomainEventBus.class);
     }
     
     public void init() {
+        initEventBus(threadPoolTaskExecutor);
         registerEventHandler();
     }
     

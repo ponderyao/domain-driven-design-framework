@@ -3,6 +3,7 @@ package io.github.ponderyao.ddd.common.util;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Map;
  * @author PonderYao
  * @since 1.1.0
  */
+@Component
 public class SpringBeanUtils implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
@@ -31,7 +33,7 @@ public class SpringBeanUtils implements ApplicationContextAware {
         try {
             bean = (T) applicationContext.getBean(clazz);
         } catch (Exception e) {
-            
+            e.printStackTrace();
         }
         if (ObjectUtils.isNull(bean)) {
             String beanName = clazz.getSimpleName();
@@ -42,7 +44,7 @@ public class SpringBeanUtils implements ApplicationContextAware {
     }
     
     public static Map<String, Object> getBeansByAnnotation(Class<? extends Annotation> annotation) {
-        return applicationContext.getBeansWithAnnotation(annotation);
+        return SpringBeanUtils.applicationContext.getBeansWithAnnotation(annotation);
     }
 
 }

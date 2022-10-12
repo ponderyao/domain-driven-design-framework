@@ -11,7 +11,7 @@ import org.springframework.transaction.TransactionDefinition;
  */
 public class TransactionProperties {
 
-    public static final String PREFIX = DomainDrivenDesignProperties.PREFIX + "event";
+    public static final String PREFIX = DomainDrivenDesignProperties.PREFIX + ".transaction";
 
     private Boolean enabled = true;
     
@@ -19,7 +19,7 @@ public class TransactionProperties {
     
     private String[] writeMethods = new String[]{"save", "remove"};
     
-    private String[] readMethods;
+    private String[] readMethods = new String[]{"*"};
     
     private int timeout = 50000;
     

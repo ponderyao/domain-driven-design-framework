@@ -8,7 +8,7 @@ package io.github.ponderyao.ddd.config.domain;
  */
 public class DomainEventProperties {
     
-    public static final String PREFIX = DomainProperties.PREFIX + "event";
+    public static final String PREFIX = DomainProperties.PREFIX + ".event";
     
     private Boolean enabled = true;
 

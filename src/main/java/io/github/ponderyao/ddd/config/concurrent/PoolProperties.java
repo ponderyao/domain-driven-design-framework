@@ -11,7 +11,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  */
 public class PoolProperties {
     
-    public static final String PREFIX = DomainDrivenDesignProperties.PREFIX + "pool";
+    public static final String PREFIX = DomainDrivenDesignProperties.PREFIX + ".pool";
     
     @NestedConfigurationProperty
     private ThreadPoolProperties thread = new ThreadPoolProperties();

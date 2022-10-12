@@ -3,11 +3,15 @@ package io.github.ponderyao.ddd.config.transaction;
 import org.springframework.aop.Advisor;
 import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.TransactionManager;
 import org.springframework.transaction.interceptor.*;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,15 +22,19 @@ import java.util.Map;
  * @author PonderYao
  * @since 1.1.0
  */
-@Component
+@Configuration
+@ConditionalOnMissingBean(DataSourceTransactionManager.class)
 public class TransactionManagerConfig {
     
-    private static final String DEFAULT_AOP_POINTCUT_EXPRESSION = "execution (io.github.ponder.*.infrastructure.repository..*(..))";
+    private static final String DEFAULT_AOP_POINTCUT_EXPRESSION = "execution (* infrastructure.repository..*.*(..))";
     
-    @Autowired
-    private TransactionManager transactionManager;
+    @Bean
+    @Primary
+    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
+    }
     
-    public TransactionInterceptor initTransactionInterceptor(TransactionProperties transactionProperties) {
+    public TransactionInterceptor initTransactionInterceptor(TransactionManager transactionManager, TransactionProperties transactionProperties) {
         int propagation = transactionProperties.getPropagation();
         int timeout = transactionProperties.getTimeout();
         String[] readMethods = transactionProperties.getReadMethods();
@@ -43,7 +51,10 @@ public class TransactionManagerConfig {
         writeAttr.setTimeout(timeout);
         Map<String, TransactionAttribute> nameMap = assemblyNameMap(readMethods, writeMethods, readOnlyAttr, writeAttr);
         transactionAttributeSource.setNameMap(nameMap);
-        return new TransactionInterceptor(transactionManager, transactionAttributeSource);
+        TransactionInterceptor transactionInterceptor = new TransactionInterceptor();
+        transactionInterceptor.setTransactionManager(transactionManager);
+        transactionInterceptor.setTransactionAttributeSource(transactionAttributeSource);
+        return transactionInterceptor;
     }
     
     private Map<String, TransactionAttribute> assemblyNameMap(

@@ -11,10 +11,9 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
-
-import javax.annotation.Resource;
 
 /**
  * DomainDrivenDesignAutoConfiguration：框架核心自动装配类
@@ -32,14 +31,11 @@ import javax.annotation.Resource;
  */
 @Configuration
 @EnableConfigurationProperties(DomainDrivenDesignProperties.class)
-@Import({ThreadPoolConfig.class})
-@ConditionalOnProperty(value = DomainDrivenDesignProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+@Import({ThreadPoolConfig.class, TransactionManagerConfig.class})
+@ConditionalOnProperty(prefix = DomainDrivenDesignProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
 public class DomainDrivenDesignAutoConfiguration {
     
     private final DomainDrivenDesignProperties properties;
-    
-    @Resource
-    private TransactionManagerConfig transactionManagerConfig;
 
     public DomainDrivenDesignAutoConfiguration(DomainDrivenDesignProperties properties) {
         this.properties = properties;
@@ -53,7 +49,7 @@ public class DomainDrivenDesignAutoConfiguration {
      * @return domainEventConfig
      */
     @Bean(initMethod = "init")
-    @ConditionalOnProperty(value = DomainEventProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(prefix = DomainEventProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
     public DomainEventConfig domainEventConfig(ThreadPoolTaskExecutor defaultThreadPoolTaskExecutor) {
         return new DomainEventConfig(properties.getDomain().getEvent(), defaultThreadPoolTaskExecutor);
     }
@@ -64,9 +60,9 @@ public class DomainDrivenDesignAutoConfiguration {
      * @return transactionAdvice
      */
     @Bean
-    @ConditionalOnProperty(value = TransactionProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
-    public TransactionInterceptor transactionAdvice() {
-        return transactionManagerConfig.initTransactionInterceptor(properties.getTransaction());
+    @ConditionalOnProperty(prefix = TransactionProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+    public TransactionInterceptor transactionAdvice(TransactionManagerConfig transactionManagerConfig, DataSourceTransactionManager transactionManager) {
+        return transactionManagerConfig.initTransactionInterceptor(transactionManager, properties.getTransaction());
     }
 
     /**
@@ -76,8 +72,8 @@ public class DomainDrivenDesignAutoConfiguration {
      * @return transactionAdvisor
      */
     @Bean
-    @ConditionalOnProperty(value = TransactionProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
-    public Advisor transactionAdvisor(TransactionInterceptor transactionAdvice) {
+    @ConditionalOnProperty(prefix = TransactionProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
+    public Advisor transactionAdvisor(TransactionInterceptor transactionAdvice, TransactionManagerConfig transactionManagerConfig) {
         return transactionManagerConfig.initTransactionAdvisor(transactionAdvice, properties.getTransaction().getPointcutExpression());
     }
     

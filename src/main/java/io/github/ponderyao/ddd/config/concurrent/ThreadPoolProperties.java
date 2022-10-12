@@ -14,7 +14,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @ConfigurationProperties(prefix = ThreadPoolProperties.PREFIX)
 public class ThreadPoolProperties {
     
-    public static final String PREFIX = PoolProperties.PREFIX + "thread";
+    public static final String PREFIX = PoolProperties.PREFIX + ".thread";
     
     private Boolean enabled = true;
 

@@ -1,5 +1,6 @@
 package io.github.ponderyao.ddd.config;
 
+import io.github.ponderyao.ddd.config.concurrent.PoolProperties;
 import io.github.ponderyao.ddd.config.domain.DomainProperties;
 import io.github.ponderyao.ddd.config.transaction.TransactionProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -17,10 +18,13 @@ public class DomainDrivenDesignProperties {
     public static final String PREFIX = "ponder.ddd";
     
     @NestedConfigurationProperty
-    private DomainProperties domain;
+    private DomainProperties domain = new DomainProperties();
     
     @NestedConfigurationProperty
-    private TransactionProperties transaction;
+    private TransactionProperties transaction = new TransactionProperties();
+    
+    @NestedConfigurationProperty
+    private PoolProperties pool = new PoolProperties();
 
     public DomainProperties getDomain() {
         return domain;
@@ -36,5 +40,13 @@ public class DomainDrivenDesignProperties {
 
     public void setTransaction(TransactionProperties transaction) {
         this.transaction = transaction;
+    }
+
+    public PoolProperties getPool() {
+        return pool;
+    }
+
+    public void setPool(PoolProperties pool) {
+        this.pool = pool;
     }
 }
