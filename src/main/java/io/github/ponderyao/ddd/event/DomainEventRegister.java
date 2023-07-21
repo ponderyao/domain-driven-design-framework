@@ -1,15 +1,16 @@
 package io.github.ponderyao.ddd.event;
 
-import io.github.ponderyao.ddd.annotation.EventHandler;
-import io.github.ponderyao.ddd.common.util.AnnotationUtils;
-import io.github.ponderyao.ddd.common.util.ObjectUtils;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import io.github.ponderyao.ddd.annotation.EventHandler;
+import io.github.ponderyao.ddd.common.util.AnnotationUtils;
+import io.github.ponderyao.ddd.common.util.ObjectUtils;
 
 /**
  * DomainEventRegister：领域事件注册器

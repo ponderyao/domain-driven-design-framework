@@ -1,10 +1,5 @@
 package io.github.ponderyao.ddd.config;
 
-import io.github.ponderyao.ddd.config.concurrent.ThreadPoolConfig;
-import io.github.ponderyao.ddd.config.domain.DomainEventConfig;
-import io.github.ponderyao.ddd.config.domain.DomainEventProperties;
-import io.github.ponderyao.ddd.config.transaction.TransactionManagerConfig;
-import io.github.ponderyao.ddd.config.transaction.TransactionProperties;
 import org.springframework.aop.Advisor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -14,6 +9,13 @@ import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.interceptor.TransactionInterceptor;
+
+import io.github.ponderyao.ddd.config.command.CommandHandlingConfig;
+import io.github.ponderyao.ddd.config.concurrent.ThreadPoolConfig;
+import io.github.ponderyao.ddd.config.domain.DomainEventConfig;
+import io.github.ponderyao.ddd.config.domain.DomainEventProperties;
+import io.github.ponderyao.ddd.config.transaction.TransactionManagerConfig;
+import io.github.ponderyao.ddd.config.transaction.TransactionProperties;
 
 /**
  * DomainDrivenDesignAutoConfiguration：框架核心自动装配类
@@ -52,6 +54,16 @@ public class DomainDrivenDesignAutoConfiguration {
     @ConditionalOnProperty(prefix = DomainEventProperties.PREFIX, name = "enabled", havingValue = "true", matchIfMissing = true)
     public DomainEventConfig domainEventConfig(ThreadPoolTaskExecutor defaultThreadPoolTaskExecutor) {
         return new DomainEventConfig(properties.getDomain().getEvent(), defaultThreadPoolTaskExecutor);
+    }
+
+    /**
+     * 复杂指令处理配置 Bean
+     * 
+     * @return commandHandlingConfig
+     */
+    @Bean(initMethod = "init")
+    public CommandHandlingConfig commandHandlingConfig() {
+        return new CommandHandlingConfig();
     }
 
     /**

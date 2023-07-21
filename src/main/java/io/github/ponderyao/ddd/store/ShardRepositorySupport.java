@@ -3,21 +3,22 @@ package io.github.ponderyao.ddd.store;
 import io.github.ponderyao.ddd.common.util.ObjectUtils;
 import io.github.ponderyao.ddd.marker.Aggregate;
 import io.github.ponderyao.ddd.marker.EntityIdentifier;
-import io.github.ponderyao.ddd.marker.Repository;
+import io.github.ponderyao.ddd.marker.ShardRepository;
 
 /**
- * RepositorySupport：通用仓储支撑类
+ * ShardRepositorySupport：通用分片仓储支撑类
  *
  * @author PonderYao
- * @since 1.0.0
+ * @since 1.1.0
  */
-public abstract class RepositorySupport<T extends Aggregate<ID, ?>, ID extends EntityIdentifier> implements Repository<T, ID> {
-    
+public abstract class ShardRepositorySupport<T extends Aggregate<ID, SID>, ID extends EntityIdentifier, SID extends EntityIdentifier> 
+    implements ShardRepository<T, ID, SID> {
+
     private final Class<T> clazz;
 
     private final AggregateSnapshotManager<T, ID> aggregateSnapshotManager;
-    
-    protected RepositorySupport(Class<T> clazz) {
+
+    protected ShardRepositorySupport(Class<T> clazz) {
         this.clazz = clazz;
         this.aggregateSnapshotManager = AggregateSnapshotManager.newInstance(clazz);
     }
@@ -29,14 +30,14 @@ public abstract class RepositorySupport<T extends Aggregate<ID, ?>, ID extends E
     protected AggregateSnapshotManager<T, ID> getAggregateSnapshotManager() {
         return aggregateSnapshotManager;
     }
-    
-    protected abstract T select(ID id);
-    
+
+    protected abstract T select(ID id, SID shardId);
+
     protected abstract void insert(T aggregate);
-    
+
     protected abstract void update(T aggregate, AggregateDiff diff);
-    
-    protected abstract void delete(ID id);
+
+    protected abstract void delete(ID id, SID shardId);
 
     @Override
     public void attach(T aggregate) {
@@ -49,8 +50,8 @@ public abstract class RepositorySupport<T extends Aggregate<ID, ?>, ID extends E
     }
 
     @Override
-    public T find(ID id) {
-        T aggregate = this.select(id);
+    public T find(ID id, SID shardId) {
+        T aggregate = this.select(id, shardId);
         if (ObjectUtils.isNotNull(aggregate)) {
             this.attach(aggregate);
         }
@@ -60,7 +61,7 @@ public abstract class RepositorySupport<T extends Aggregate<ID, ?>, ID extends E
     @Override
     public void remove(T aggregate) {
         if (ObjectUtils.isNotNull(aggregate) && ObjectUtils.isNotNull(aggregate.getId())) {
-            this.delete(aggregate.getId());
+            this.delete(aggregate.getId(), aggregate.getShardId());
             this.detach(aggregate);
         }
     }

@@ -9,9 +9,9 @@ import io.github.ponderyao.ddd.marker.EntityIdentifier;
  * @author PonderYao
  * @since 1.0.0
  */
-public interface AggregateSnapshotManager<T extends Aggregate<ID>, ID extends EntityIdentifier> {
+public interface AggregateSnapshotManager<T extends Aggregate<ID, ?>, ID extends EntityIdentifier> {
 
-    static <T extends Aggregate<ID>, ID extends EntityIdentifier> AggregateSnapshotManager<T, ID> newInstance(Class<T> clazz) {
+    static <T extends Aggregate<ID, ?>, ID extends EntityIdentifier> AggregateSnapshotManager<T, ID> newInstance(Class<T> clazz) {
         return new ThreadLocalAggregateSnapshotManager<>(clazz);
     }
     

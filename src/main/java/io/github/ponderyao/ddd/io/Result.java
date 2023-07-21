@@ -8,21 +8,22 @@ import io.github.ponderyao.ddd.common.constant.ResponseStatus;
  * @author PonderYao
  * @since 1.0.0
  */
-public class Result extends DTO {
+public class Result<T> extends DTO {
 
     private static final long serialVersionUID = 1787010952172815649L;
     
-    public static final String DEFAULT_MSG = "操作成功";
-    
     private int code;
     
-    private String msg;
+    private String errCode;
     
-    private DTO data;
+    private String errMsg;
+    
+    private T data;
 
-    public Result(int code, String msg, DTO data) {
+    public Result(int code, String errCode, String errMsg, T data) {
         this.code = code;
-        this.msg = msg;
+        this.errCode = errCode;
+        this.errMsg = errMsg;
         this.data = data;
     }
     
@@ -30,11 +31,15 @@ public class Result extends DTO {
         this.code = code;
     }
     
-    public void setMsg(String msg) {
-        this.msg = msg;
+    public void setErrCode(String errCode) {
+        this.errCode = errCode;
     }
     
-    public void setData(DTO data) {
+    public void setErrMsg(String errMsg) {
+        this.errMsg = errMsg;
+    }
+    
+    public void setData(T data) {
         this.data = data;
     }
     
@@ -42,24 +47,31 @@ public class Result extends DTO {
         return this.code;
     }
     
-    public String getMsg() {
-        return this.msg;    
+    public String getErrCode() {
+        return this.errCode;
     }
     
-    public DTO getData() {
+    public String getErrMsg() {
+        return this.errMsg;    
+    }
+    
+    public T getData() {
         return this.data;
     }
     
-    public static Result success() {
+    public static <T> Result<T> success() {
         return Result.success(null);
     }
     
-    public static Result success(DTO data) {
-        return new Result(ResponseStatus.SUCCESS, DEFAULT_MSG, data);
+    public static <T> Result<T> success(T data) {
+        return new Result<>(ResponseStatus.SUCCESS, null, null, data);
     }
     
-    public static Result error(String msg) {
-        return new Result(ResponseStatus.ERROR, msg, null);
+    public static <T> Result<T> fail(String errMsg) {
+        return Result.fail(null, errMsg);
     }
     
+    public static <T> Result<T> fail(String errCode, String errMsg) {
+        return new Result<>(ResponseStatus.ERROR, errCode, errMsg, null);
+    }
 }

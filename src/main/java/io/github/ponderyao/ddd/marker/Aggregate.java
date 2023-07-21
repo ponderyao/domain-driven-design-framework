@@ -24,6 +24,6 @@ package io.github.ponderyao.ddd.marker;
  * @see Entity
  * @since 1.0.0
  */
-public interface Aggregate<ID extends EntityIdentifier> extends Entity<ID> {
+public interface Aggregate<ID extends EntityIdentifier, SID extends EntityIdentifier> extends Entity<ID>, Modifiable, ShardIdentifiable<SID> {
     
 }

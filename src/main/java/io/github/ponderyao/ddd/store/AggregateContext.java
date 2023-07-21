@@ -1,14 +1,14 @@
 package io.github.ponderyao.ddd.store;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import io.github.ponderyao.ddd.common.util.ObjectUtils;
 import io.github.ponderyao.ddd.common.util.ReflectionUtils;
 import io.github.ponderyao.ddd.marker.Aggregate;
 import io.github.ponderyao.ddd.marker.EntityIdentifier;
 import io.github.ponderyao.ddd.util.AggregateDiffUtils;
 import io.github.ponderyao.ddd.util.SnapshotUtils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * AggregateContext：聚合上下文
@@ -19,11 +19,11 @@ import java.util.Map;
  * @author PonderYao
  * @since 1.0.0
  */
-public class AggregateContext<T extends Aggregate<ID>, ID extends EntityIdentifier> {
+public class AggregateContext<T extends Aggregate<ID, ?>, ID extends EntityIdentifier> {
     
-    private Class<? extends T> clazz;
+    private final Class<? extends T> clazz;
     
-    private Map<ID, T> aggregateMap = new HashMap<>();
+    private final Map<ID, T> aggregateMap = new HashMap<>();
     
     public AggregateContext(Class<? extends T> clazz) {
         this.clazz = clazz;

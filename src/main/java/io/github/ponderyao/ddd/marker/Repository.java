@@ -24,7 +24,7 @@ package io.github.ponderyao.ddd.marker;
  * @see Identifier
  * @since 1.0.0
  */
-public interface Repository<T extends Aggregate<ID>, ID extends EntityIdentifier> {
+public interface Repository<T extends Aggregate<ID, ?>, ID extends EntityIdentifier> {
 
     /**
      * 将一个 Aggregate 附属到当前 Repository，使其可追踪
