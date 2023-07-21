@@ -1,12 +1,14 @@
 package io.github.ponderyao.ddd.common.util;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+
+import javax.annotation.Nonnull;
+
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
-
-import java.lang.annotation.Annotation;
-import java.util.Map;
 
 /**
  * Spring Bean 工具类
@@ -20,7 +22,7 @@ public class SpringBeanUtils implements ApplicationContextAware {
     private static ApplicationContext applicationContext;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(@Nonnull ApplicationContext applicationContext) throws BeansException {
         SpringBeanUtils.applicationContext = applicationContext;
     }
 
@@ -28,10 +30,11 @@ public class SpringBeanUtils implements ApplicationContextAware {
         return SpringBeanUtils.applicationContext;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> T getBean(Class<T> clazz) {
         T bean = null;
         try {
-            bean = (T) applicationContext.getBean(clazz);
+            bean = applicationContext.getBean(clazz);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -45,6 +48,10 @@ public class SpringBeanUtils implements ApplicationContextAware {
     
     public static Map<String, Object> getBeansByAnnotation(Class<? extends Annotation> annotation) {
         return SpringBeanUtils.applicationContext.getBeansWithAnnotation(annotation);
+    }
+    
+    public static <T> Map<String, T> getBeansByInterface(Class<T> clazz) {
+        return SpringBeanUtils.applicationContext.getBeansOfType(clazz);
     }
 
 }

@@ -1,7 +1,8 @@
 package io.github.ponderyao.ddd.config.transaction;
 
-import io.github.ponderyao.ddd.config.DomainDrivenDesignProperties;
 import org.springframework.transaction.TransactionDefinition;
+
+import io.github.ponderyao.ddd.config.DomainDrivenDesignProperties;
 
 /**
  * TransactionProperties：自定义事务装配属性
@@ -23,7 +24,7 @@ public class TransactionProperties {
     
     private int timeout = 50000;
     
-    private String pointcutExpression = "execution (io.github.ponder.*.infrastructure.repository..*(..))";
+    private String pointcutExpression = "execution (* infrastructure.repository..*.*(..))";
 
     public Boolean getEnabled() {
         return enabled;

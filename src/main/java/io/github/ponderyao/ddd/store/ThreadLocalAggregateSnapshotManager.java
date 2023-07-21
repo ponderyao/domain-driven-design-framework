@@ -12,11 +12,11 @@ import io.github.ponderyao.ddd.marker.EntityIdentifier;
  * @author PonderYao
  * @since 1.0.0
  */
-public class ThreadLocalAggregateSnapshotManager<T extends Aggregate<ID>, ID extends EntityIdentifier> implements AggregateSnapshotManager<T, ID> {
+public class ThreadLocalAggregateSnapshotManager<T extends Aggregate<ID, ?>, ID extends EntityIdentifier> implements AggregateSnapshotManager<T, ID> {
 
-    private Class<? extends T> clazz;
+    private final Class<? extends T> clazz;
     
-    private ThreadLocal<AggregateContext<T, ID>> context;
+    private final ThreadLocal<AggregateContext<T, ID>> context;
     
     public ThreadLocalAggregateSnapshotManager(Class<? extends T> clazz) {
         this.clazz = clazz;
